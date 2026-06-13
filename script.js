@@ -11,18 +11,14 @@
         var saveSettingsBtn = document.getElementById('saveSettingsBtn');
         var apiKeyInput = document.getElementById('apiKey');
 
-        // Audio elements
-        var recordBtn = document.getElementById('recordBtn');
+        // Audio inputs (labels trigger these natively — no JS click needed)
         var recordInput = document.getElementById('recordInput');
-        var uploadAudioBtn = document.getElementById('uploadAudioBtn');
         var audioFileInput = document.getElementById('audioFileInput');
         var audioStatus = document.getElementById('audioStatus');
         var audioFileName = document.getElementById('audioFileName');
 
-        // Image elements
-        var takePhotoBtn = document.getElementById('takePhotoBtn');
+        // Image inputs
         var cameraInput = document.getElementById('cameraInput');
-        var uploadImageBtn = document.getElementById('uploadImageBtn');
         var imageFileInput = document.getElementById('imageFileInput');
         var imageStatus = document.getElementById('imageStatus');
         var imageFileName = document.getElementById('imageFileName');
@@ -37,7 +33,7 @@
         var audioFile = null;
         var imageFile = null;
 
-        // Show settings if no key
+        // Show settings modal if no key saved
         if (apiKey) {
             apiKeyInput.value = apiKey;
         } else {
@@ -57,17 +53,7 @@
             settingsModal.classList.add('hidden');
         });
 
-        // ============================================
-        // AUDIO: Record Voice
-        // Clicking the button triggers the hidden <input capture="user">
-        // On mobile: opens the native OS voice recorder
-        // On desktop: opens a file picker for audio files
-        // ============================================
-        recordBtn.addEventListener('click', function() {
-            recordInput.value = '';
-            recordInput.click();
-        });
-
+        // --- Audio: Record (native OS recorder via capture="user") ---
         recordInput.addEventListener('change', function() {
             if (this.files && this.files[0]) {
                 audioFile = this.files[0];
@@ -77,12 +63,7 @@
             }
         });
 
-        // AUDIO: Upload file
-        uploadAudioBtn.addEventListener('click', function() {
-            audioFileInput.value = '';
-            audioFileInput.click();
-        });
-
+        // --- Audio: Upload file ---
         audioFileInput.addEventListener('change', function() {
             if (this.files && this.files[0]) {
                 audioFile = this.files[0];
@@ -92,17 +73,7 @@
             }
         });
 
-        // ============================================
-        // IMAGE: Take Photo
-        // Clicking the button triggers the hidden <input capture="environment">
-        // On mobile: opens the native camera
-        // On desktop: opens a file picker for images
-        // ============================================
-        takePhotoBtn.addEventListener('click', function() {
-            cameraInput.value = '';
-            cameraInput.click();
-        });
-
+        // --- Image: Take photo (native camera via capture="environment") ---
         cameraInput.addEventListener('change', function() {
             if (this.files && this.files[0]) {
                 imageFile = this.files[0];
@@ -111,12 +82,7 @@
             }
         });
 
-        // IMAGE: Upload file
-        uploadImageBtn.addEventListener('click', function() {
-            imageFileInput.value = '';
-            imageFileInput.click();
-        });
-
+        // --- Image: Upload file ---
         imageFileInput.addEventListener('change', function() {
             if (this.files && this.files[0]) {
                 imageFile = this.files[0];
@@ -125,9 +91,7 @@
             }
         });
 
-        // ============================================
-        // GENERATE RECIPE
-        // ============================================
+        // --- Generate Recipe ---
         generateBtn.addEventListener('click', function() {
             handleGenerate();
         });

@@ -28,20 +28,15 @@
                 <div class="input-card">
                     <h3 class="card-label">Audio <span class="required-tag">Required</span></h3>
 
-                    <!-- Option 1: Record voice (uses native OS recorder on mobile) -->
-                    <button id="recordBtn" class="action-btn record-btn" type="button">
-                        🎤 Record Voice
-                    </button>
-                    <!-- Hidden native input that opens the OS voice recorder -->
-                    <input type="file" id="recordInput" accept="audio/*" capture="user" class="hidden-input">
+                    <!-- Record voice: label triggers input natively, no JS needed -->
+                    <input type="file" id="recordInput" accept="audio/*" capture="user" class="sr-only">
+                    <label for="recordInput" class="action-btn record-btn">🎤 Record Voice</label>
 
                     <div class="divider"><span>or</span></div>
 
-                    <!-- Option 2: Upload existing file -->
-                    <button id="uploadAudioBtn" class="action-btn upload-btn" type="button">
-                        📁 Upload Audio File
-                    </button>
-                    <input type="file" id="audioFileInput" accept="audio/*" class="hidden-input">
+                    <!-- Upload existing audio file -->
+                    <input type="file" id="audioFileInput" accept="audio/*" class="sr-only">
+                    <label for="audioFileInput" class="action-btn upload-btn">📁 Upload Audio File</label>
 
                     <div id="audioStatus" class="file-status hidden">
                         <span class="status-icon">✅</span>
@@ -53,19 +48,15 @@
                 <div class="input-card">
                     <h3 class="card-label">Image <span class="optional-tag">Optional</span></h3>
 
-                    <!-- Option 1: Take photo (uses native camera on mobile) -->
-                    <button id="takePhotoBtn" class="action-btn record-btn" type="button">
-                        📷 Take Photo
-                    </button>
-                    <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden-input">
+                    <!-- Take photo: label triggers camera input natively -->
+                    <input type="file" id="cameraInput" accept="image/*" capture="environment" class="sr-only">
+                    <label for="cameraInput" class="action-btn record-btn">📷 Take Photo</label>
 
                     <div class="divider"><span>or</span></div>
 
-                    <!-- Option 2: Upload existing image -->
-                    <button id="uploadImageBtn" class="action-btn upload-btn" type="button">
-                        📁 Upload Image
-                    </button>
-                    <input type="file" id="imageFileInput" accept="image/*" class="hidden-input">
+                    <!-- Upload existing image -->
+                    <input type="file" id="imageFileInput" accept="image/*" class="sr-only">
+                    <label for="imageFileInput" class="action-btn upload-btn">📁 Upload Image</label>
 
                     <div id="imageStatus" class="file-status hidden">
                         <span class="status-icon">✅</span>

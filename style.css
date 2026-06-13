@@ -127,8 +127,8 @@ body {
     border-radius: 4px;
 }
 
-/* Hidden native file inputs */
-.hidden-input {
+/* Screen-reader only: visually hidden but still accessible to labels */
+.sr-only {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -138,6 +138,7 @@ body {
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+    opacity: 0;
 }
 
 /* Action buttons */
