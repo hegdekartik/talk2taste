@@ -26,26 +26,44 @@
 
     <main class="container">
         <section class="upload-section glass-card">
-            <p class="description">Upload an audio recording of a recipe. We'll translate it (if needed), extract ingredients, and provide clear step-by-step instructions. You can optionally include an image of the dish to enhance context.</p>
+            <p class="description">Upload or record an audio recipe. We'll translate it, extract ingredients, and provide clear step-by-step instructions. Optionally upload or take an image of the dish to enhance context.</p>
             
             <div class="upload-grid">
-                <div class="file-drop-area" id="audioDropArea">
-                    <input type="file" id="audioInput" accept="audio/*" class="file-input">
-                    <div class="drop-content">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-                        <span class="drop-title">Upload Audio</span>
-                        <span class="drop-desc">Required (MP3, WAV, M4A)</span>
-                        <span id="audioFileName" class="file-name"></span>
+                <!-- Audio Section -->
+                <div class="input-card">
+                    <div class="file-drop-area" id="audioDropArea">
+                        <input type="file" id="audioInput" accept="audio/*" class="file-input">
+                        <div class="drop-content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                            <span class="drop-title">Upload Audio</span>
+                            <span class="drop-desc">Required (MP3, WAV, M4A)</span>
+                            <span id="audioFileName" class="file-name"></span>
+                        </div>
+                    </div>
+                    <div class="action-row">
+                        <div class="divider"><span>OR</span></div>
+                        <button id="recordBtn" class="secondary-btn">
+                            <span class="record-dot hidden"></span>
+                            <span id="recordBtnText">🎤 Record Voice</span>
+                        </button>
                     </div>
                 </div>
 
-                <div class="file-drop-area" id="imageDropArea">
-                    <input type="file" id="imageInput" accept="image/*" class="file-input">
-                    <div class="drop-content">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                        <span class="drop-title">Upload Image</span>
-                        <span class="drop-desc">Optional (JPEG, PNG)</span>
-                        <span id="imageFileName" class="file-name"></span>
+                <!-- Image Section -->
+                <div class="input-card">
+                    <div class="file-drop-area" id="imageDropArea">
+                        <!-- 'capture="environment"' allows mobile users to take a photo directly from the file picker -->
+                        <input type="file" id="imageInput" accept="image/*" capture="environment" class="file-input">
+                        <div class="drop-content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                            <span class="drop-title">Upload Image</span>
+                            <span class="drop-desc">Optional (JPEG, PNG)</span>
+                            <span id="imageFileName" class="file-name"></span>
+                        </div>
+                    </div>
+                    <div class="action-row desktop-only">
+                        <div class="divider"><span>OR</span></div>
+                        <button id="openWebcamBtn" class="secondary-btn">📷 Take Photo via Webcam</button>
                     </div>
                 </div>
             </div>
@@ -71,11 +89,11 @@
                 </div>
             </div>
             
-            <!-- Raw Markdown display fallback -->
             <div id="rawOutput" class="raw-output hidden"></div>
         </section>
     </main>
 
+    <!-- Settings Modal -->
     <div id="settingsModal" class="modal hidden">
         <div class="modal-content glass-card">
             <div class="modal-header">
@@ -95,7 +113,23 @@
         </div>
     </div>
 
-    <!-- Adding Marked library to parse Markdown responses -->
+    <!-- Webcam Modal -->
+    <div id="webcamModal" class="modal hidden">
+        <div class="modal-content glass-card webcam-content">
+            <div class="modal-header">
+                <h2>Take Photo</h2>
+                <button id="closeWebcamBtn" class="icon-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <video id="webcamVideo" autoplay playsinline></video>
+                <canvas id="webcamCanvas" class="hidden"></canvas>
+            </div>
+            <div class="modal-footer">
+                <button id="capturePhotoBtn" class="primary-btn">📸 Capture</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="script.js"></script>
 </body>
