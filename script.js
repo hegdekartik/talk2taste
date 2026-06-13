@@ -86,44 +86,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Audio Recording Logic ---
-    recordBtn.addEventListener('click', async () => {
+    recordBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
         if (!isRecording) {
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                alert("Recording is not supported in this browser or context. Make sure you are using a secure connection (HTTPS or localhost).");
+                alert("Recording is not supported in this browser. Ensure you are on HTTPS.");
                 return;
             }
 
-            try {
-                const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(audioStream);
-                audioChunks = [];
+            // Ask for permission explicitly (triggers browser popup on mobile)
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function(audioStream) {
+                    mediaRecorder = new MediaRecorder(audioStream);
+                    audioChunks = [];
 
-                mediaRecorder.addEventListener("dataavailable", event => {
-                    audioChunks.push(event.data);
+                    mediaRecorder.addEventListener("dataavailable", function(event) {
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener("stop", function() {
+                        const mimeType = mediaRecorder.mimeType || 'audio/webm';
+                        const audioBlob = new Blob(audioChunks, { type: mimeType });
+                        audioFile = audioBlob;
+                        audioFileName.textContent = "Recorded_Audio" + (mimeType.includes('mp4') ? '.m4a' : '.webm');
+                        audioDropArea.classList.add('has-file');
+                        checkFormValidity();
+                        
+                        // Release microphone tracks
+                        audioStream.getTracks().forEach(track => track.stop());
+                    });
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordBtn.classList.add('recording');
+                    recordDot.classList.remove('hidden');
+                    recordBtnText.textContent = "Stop Recording";
+                })
+                .catch(function(err) {
+                    console.error("Microphone access denied or error:", err);
+                    alert("Permission denied or microphone unavailable. Please allow microphone access in your browser settings and try again.");
                 });
-
-                mediaRecorder.addEventListener("stop", () => {
-                    const mimeType = mediaRecorder.mimeType || 'audio/webm';
-                    const audioBlob = new Blob(audioChunks, { type: mimeType });
-                    audioFile = audioBlob;
-                    audioFileName.textContent = "Recorded_Audio" + (mimeType.includes('mp4') ? '.m4a' : '.webm');
-                    audioDropArea.classList.add('has-file');
-                    checkFormValidity();
-                });
-
-                mediaRecorder.start();
-                isRecording = true;
-                recordBtn.classList.add('recording');
-                recordDot.classList.remove('hidden');
-                recordBtnText.textContent = "Stop Recording";
-            } catch (err) {
-                console.error("Microphone access denied or error:", err);
-                alert("Could not access the microphone. Please check your browser permissions.");
-            }
         } else {
             if (mediaRecorder && mediaRecorder.state !== "inactive") {
                 mediaRecorder.stop();
-                mediaRecorder.stream.getTracks().forEach(track => track.stop());
             }
             isRecording = false;
             recordBtn.classList.remove('recording');
