@@ -88,9 +88,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Audio Recording Logic ---
     recordBtn.addEventListener('click', async () => {
         if (!isRecording) {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert("Recording is not supported in this browser or context. Make sure you are using a secure connection (HTTPS or localhost).");
+                return;
+            }
+
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
+                const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(audioStream);
                 audioChunks = [];
 
                 mediaRecorder.addEventListener("dataavailable", event => {
@@ -98,9 +103,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 mediaRecorder.addEventListener("stop", () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const mimeType = mediaRecorder.mimeType || 'audio/webm';
+                    const audioBlob = new Blob(audioChunks, { type: mimeType });
                     audioFile = audioBlob;
-                    audioFileName.textContent = "Recorded Audio.webm";
+                    audioFileName.textContent = "Recorded_Audio" + (mimeType.includes('mp4') ? '.m4a' : '.webm');
                     audioDropArea.classList.add('has-file');
                     checkFormValidity();
                 });
@@ -112,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 recordBtnText.textContent = "Stop Recording";
             } catch (err) {
                 console.error("Microphone access denied or error:", err);
-                alert("Could not access the microphone. Please check permissions.");
+                alert("Could not access the microphone. Please check your browser permissions.");
             }
         } else {
             if (mediaRecorder && mediaRecorder.state !== "inactive") {
@@ -129,13 +135,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Webcam Capture Logic ---
     if (openWebcamBtn) {
         openWebcamBtn.addEventListener('click', async () => {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert("Camera access is not supported in this browser or context. Make sure you are using a secure connection (HTTPS or localhost).");
+                return;
+            }
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 webcamVideo.srcObject = stream;
                 webcamModal.classList.remove('hidden');
             } catch (err) {
                 console.error("Camera access denied or error:", err);
-                alert("Could not access the camera. Please check permissions.");
+                alert("Could not access the camera. Please check your browser permissions.");
             }
         });
     }
@@ -249,9 +259,12 @@ Provide a clear, step-by-step recipe based on the audio.
 Also extract the list of ingredients based on the audio.
 If an image is provided, ensure your recipe name and context match the provided image.`;
 
-            // Mime types need to be explicit. Fallback to webm or png if missing (for blobs)
-            const audioMimeType = audioFile.type || 'audio/webm';
-            const imageMimeType = imageFile?.type || 'image/png';
+            // Mime types need to be explicit. Remove codecs if present (e.g. audio/webm;codecs=opus -> audio/webm)
+            const rawAudioMime = audioFile.type || 'audio/webm';
+            const audioMimeType = rawAudioMime.split(';')[0];
+            
+            const rawImageMime = imageFile?.type || 'image/png';
+            const imageMimeType = rawImageMime.split(';')[0];
 
             const contents = [
                 {
